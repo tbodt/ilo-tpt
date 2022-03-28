@@ -15,7 +15,6 @@ import (
 )
 
 const (
-	TOKEN    = "OTAzODU2OTg2MzI2Njk1OTQ3.YXzEag.omRBfI9wa-Ghtko9swXvbRUb4_M"
 	JAN_TEPO = "155417194530996225"
 )
 
