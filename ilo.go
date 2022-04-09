@@ -24,7 +24,8 @@ const (
 // @ilo o mu la ilo li mu
 
 var (
-	nimiIlo string
+	nimiIlo    string
+	nimiIloKin string
 )
 
 func main() {
@@ -55,7 +56,8 @@ func main() {
 	if pkl != nil {
 		log.Fatal(pkl)
 	}
-	nimiIlo = "<@!" + ijoNimiIlo.ID + ">"
+	nimiIlo = ijoNimiIlo.Mention()
+	nimiIloKin = "<@!" + ijoNimiIlo.ID + ">"
 	log.Println("ilo li open")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
@@ -124,6 +126,17 @@ func oAlasaEKenTokiLonKulupu(kulupu []kenToki, kenAlasa kenToki) int {
 	return -1
 }
 
+func tawaIloAnuSeme(toki string) string {
+	if strings.HasPrefix(toki, nimiIlo) {
+		toki = strings.TrimPrefix(toki, nimiIlo)
+	} else if strings.HasPrefix(toki, nimiIloKin) {
+		toki = strings.TrimPrefix(toki, nimiIloKin)
+	} else {
+		return ""
+	}
+	return strings.TrimSpace(toki)
+}
+
 func tokiLiKama(s *discordgo.Session, t *discordgo.MessageCreate) error {
 	//tenpoOpen := time.Now()
 
@@ -139,8 +152,7 @@ func tokiLiKama(s *discordgo.Session, t *discordgo.MessageCreate) error {
 	wileMa := wile.WileMa[t.GuildID]
 
 	// toki li tawa ala tawa ilo?
-	if strings.HasPrefix(t.Content, nimiIlo+" o ") || strings.HasPrefix(t.Content, nimiIlo+" li ") {
-		toki := strings.TrimSpace(strings.TrimPrefix(t.Content, nimiIlo+" "))
+	if toki := tawaIloAnuSeme(t.Content); toki != "" {
 		var tokiKama string
 		wileLiAnte := false
 		if toki == "o mu" {
