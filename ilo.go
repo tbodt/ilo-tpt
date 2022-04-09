@@ -214,6 +214,7 @@ toki! mi o seme? sina ken toki tawa mi sama ni:
 **%[1]s o lukin e toki mi sama __ijo__** la mi lukin ala e toki sina sama __ijo__ lon tenpo pini la mi weka e ni li kama ni ala.
 **%[1]s li seme e mi** la mi toki e ni: mi lukin ala lukin e toki seme sina lon ma ni.
 **%[1]s o mu** la mi mu.
+ale li ken lukin e toki ilo mi lon lipu ni: https://github.com/tbodt/ilo-tpt
 `, nimiIlo)
 		}
 		if wileLiAnte {
