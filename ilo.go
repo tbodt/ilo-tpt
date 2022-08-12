@@ -126,15 +126,15 @@ func oAlasaEKenTokiLonKulupu(kulupu []kenToki, kenAlasa kenToki) int {
 	return -1
 }
 
-func tawaIloAnuSeme(toki string) string {
+func tawaIloAnuSeme(toki string) (string, bool) {
 	if strings.HasPrefix(toki, nimiIlo) {
 		toki = strings.TrimPrefix(toki, nimiIlo)
 	} else if strings.HasPrefix(toki, nimiIloKin) {
 		toki = strings.TrimPrefix(toki, nimiIloKin)
 	} else {
-		return ""
+		return "", false
 	}
-	return strings.TrimSpace(toki)
+	return strings.TrimSpace(toki), true
 }
 
 func tokiLiKama(s *discordgo.Session, t *discordgo.MessageCreate) error {
@@ -152,7 +152,7 @@ func tokiLiKama(s *discordgo.Session, t *discordgo.MessageCreate) error {
 	wileMa := wile.WileMa[t.GuildID]
 
 	// toki li tawa ala tawa ilo?
-	if toki := tawaIloAnuSeme(t.Content); toki != "" {
+	if toki, tawaIlo := tawaIloAnuSeme(t.Content); tawaIlo {
 		var tokiKama string
 		wileLiAnte := false
 		if toki == "o mu" {
