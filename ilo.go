@@ -255,6 +255,9 @@ ale li ken lukin e toki ilo mi lon lipu ni: https://github.com/tbodt/ilo-tpt
 
 	if !tokiLiPonaAlaPona(t.Content) {
 		pkl := s.ChannelMessageDelete(t.ChannelID, t.ID)
+		if pklSiko, liNi := pkl.(*discordgo.RESTError); liNi && pklSiko.Message.Code == discordgo.ErrCodeCannotExecuteActionOnSystemMessage {
+			return nil
+		}
 		if pkl != nil {
 			return pkl
 		}
