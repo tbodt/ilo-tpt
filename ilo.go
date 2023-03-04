@@ -10,7 +10,9 @@ import (
 	"regexp"
 	"strings"
 	"syscall"
+	"unicode"
 
+	"github.com/mozillazg/go-unidecode"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -284,7 +286,17 @@ var (
 	}
 	SITELEN_NIMI = regexp.MustCompile(`\pL+`)
 	NIMI_PONA    = regexp.MustCompile(`^([jklmnpstw]?[aeiou]n?([jklmnpstw][aeiou]n?)*|\p{Lu}.*|.{1}|n|msa|cw)$`)
+	NIMI_PONA_LILI = regexp.MustCompile(`^((?:[ijklmnprstvwy]|sh|ts|ch)?[aeiou]n?((?:[ijklmnprstvwy]|sh|ts|ch)[aeiou]n?)*|\p{Lu}.*|.{1}|n|msa|cw)$`)
 )
+
+func nasinLiAsukiAlaAsuki(s string) bool {
+	for i := 0; i < len(s); i++ {
+		if s[i] > unicode.MaxASCII {
+			return false
+		}
+	}
+	return true
+}
 
 func tokiLiPonaAlaPona(toki string) bool {
 	// toki li ike ala ike?
@@ -293,6 +305,8 @@ func tokiLiPonaAlaPona(toki string) bool {
 		toki = ijo.ReplaceAllString(toki, " ")
 	}
 	// sitelen sama mute li lon poka la o wan e ona.
+	// O SONA: nasin sitelen li sama ala sitelen Lasina la ike ni li ken: sitelen わわ (wawa) li kama わ (wa)
+	// ni li pakala ala e nasin pona li nasa taso
 	sitelenToki := []rune(toki)
 	toki = ""
 	for n, s := range sitelenToki {
@@ -306,8 +320,13 @@ func tokiLiPonaAlaPona(toki string) bool {
 	mutePiNimiIke := 0
 	muteNimi := 0
 	for _, nimi := range SITELEN_NIMI.FindAllString(toki, -1) {
+		NASIN_PONA := NIMI_PONA
+		if !nasinLiAsukiAlaAsuki(nimi) {
+			nimi = strings.ToLower(unidecode.Unidecode(nimi))
+			NASIN_PONA = NIMI_PONA_LILI
+    } // o ante ala e nimi ale lon wan; sitelen Sonko li ken suli lon open sama ni: sitelen 和 li kama He
 		muteNimi++
-		if !NIMI_PONA.MatchString(nimi) {
+		if !NASIN_PONA.MatchString(nimi) {
 			mutePiNimiIke++
 		}
 	}
